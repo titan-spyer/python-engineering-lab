@@ -1,4 +1,12 @@
 # The calculator model starts from here 
+def add(a: float, b: float) -> float: return a + b
+def subtract(a: float, b: float) -> float: return a - b
+def multiply(a: float, b: float) -> float: return a * b
+def divide(a: float, b: float) -> float | str:
+    if b == 0:
+        return "Error: Division by zero is not allowed."
+    return a / b
+
 def calculator():
     print("Welcome to calculator...")
     while True:
@@ -10,20 +18,13 @@ def calculator():
         operation = input()
         
         if operation == '+':
-            result = num1 + num2
-            print(f"The result of {num1} + {num2} is: {result}")
+            print(f"The result is: {add(num1, num2)}")
         elif operation == '-':
-            result = num1 - num2
-            print(f"The result of {num1} - {num2} is: {result}")
+            print(f"The result is: {subtract(num1, num2)}")
         elif operation == '*':
-            result = num1 * num2
-            print(f"The result of {num1} * {num2} is: {result}")
+            print(f"The result is: {multiply(num1, num2)}")
         elif operation == '/':
-            if num2 != 0:
-                result = num1 / num2
-                print(f"The result of {num1} / {num2} is: {result}")
-            else:
-                print("Error: Division by zero is not allowed.")
+            print(f"The result is: {divide(num1, num2)}")
         else:
             print("Invalid operation. Please try again.")
         
@@ -34,6 +35,11 @@ def calculator():
 
 
 # A text Processor model starts from here
+def get_uppercase(text: str) -> str: return text.upper()
+def get_lowercase(text: str) -> str: return text.lower()
+def get_char_count(text: str) -> int: return len(text)
+def get_reversed(text: str) -> str: return text[::-1]
+
 def text_processor():
     print("Welcome to the text processor...")
     while True:
@@ -48,17 +54,13 @@ def text_processor():
         operation = input()
         
         if operation == '1':
-            result = text.upper()
-            print(f"Uppercase: {result}")
+            print(f"Uppercase: {get_uppercase(text)}")
         elif operation == '2':
-            result = text.lower()
-            print(f"Lowercase: {result}")
+            print(f"Lowercase: {get_lowercase(text)}")
         elif operation == '3':
-            result = len(text)
-            print(f"Character count: {result}")
+            print(f"Character count: {get_char_count(text)}")
         elif operation == '4':
-            result = text[::-1]
-            print(f"Reversed string: {result}")
+            print(f"Reversed string: {get_reversed(text)}")
         else:
             print("Invalid operation. Please try again.")
         
@@ -68,22 +70,23 @@ def text_processor():
             break
 
 # A simple Password validator model starts from here
+def validate_password(password: str) -> str:
+    if len(password) < 8:
+        return "Password must be at least 8 characters long."
+    if not any(char.isupper() for char in password):
+        return "Password must contain at least one uppercase letter."
+    if not any(char.islower() for char in password):
+        return "Password must contain at least one lowercase letter."
+    if not any(char.isdigit() for char in password):
+        return "Password must contain at least one digit."
+    return "Password is valid."
+
 def password_validator():
     print("Welcome to the password validator...")
     while True:
         print("Enter a password: ")
         password = input()
-        
-        if len(password) < 8:
-            print("Password must be at least 8 characters long.")
-        elif not any(char.isupper() for char in password):
-            print("Password must contain at least one uppercase letter.")
-        elif not any(char.islower() for char in password):
-            print("Password must contain at least one lowercase letter.")
-        elif not any(char.isdigit() for char in password):
-            print("Password must contain at least one digit.")
-        else:
-            print("Password is valid.")
+        print(validate_password(password))
         
         print("Do you want to validate another password? (yes/no)")
         continue_validation = input().lower()
@@ -91,20 +94,22 @@ def password_validator():
             break
 
 # A simple Log praser model starts from here
+def parse_log(log_entry: str) -> str:
+    if "ERROR" in log_entry:
+        return "This is an error log."
+    elif "WARNING" in log_entry:
+        return "This is a warning log."
+    elif "INFO" in log_entry:
+        return "This is an info log."
+    else:
+        return "Unknown log type."
+
 def log_parser():
     print("Welcome to the log parser...")
     while True:
         print("Enter a log entry: ")
         log_entry = input()
-        
-        if "ERROR" in log_entry:
-            print("This is an error log.")
-        elif "WARNING" in log_entry:
-            print("This is a warning log.")
-        elif "INFO" in log_entry:
-            print("This is an info log.")
-        else:
-            print("Unknown log type.")
+        print(parse_log(log_entry))
         
         print("Do you want to parse another log entry? (yes/no)")
         continue_parsing = input().lower()

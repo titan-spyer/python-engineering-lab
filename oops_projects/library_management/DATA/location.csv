@@ -1,0 +1,31 @@
+location_id,aisle,shelf,position,section,description,capacity
+A1-2-3,A,1,2,Mathematics,"Mathematics section - Wavelets, Analysis, Number Theory",50
+A1-1-1,A,1,1,Mathematics,"Mathematics section - Pure Mathematics, Real Analysis",50
+A1-1-2,A,1,2,Mathematics,"Mathematics section - Applied Mathematics",50
+A2-1-3,A,2,1,Engineering,"Engineering - Signal Processing, Image Processing",60
+B2-1-4,B,2,1,Computer Science,"Data Science & ML section - General Data Science",75
+B2-1-5,B,2,1,Computer Science,"Data Science - Machine Learning & Python",75
+B2-1-6,B,2,1,Computer Science,"Data Science - Advanced Topics, Statistics",75
+B1-3-2,B,1,3,Science,"Science - Physics (Popular Science)",50
+B1-3-3,B,1,3,Science,"Science - Physics (Advanced)",50
+B1-3-4,B,1,3,Science,"Science - General Science & Philosophy of Science",50
+B1-1-1,B,1,1,Computer Science,"Computer Science - Algorithms & Theory",60
+B1-1-2,B,1,1,Computer Science,"Computer Science - Software Engineering",60
+B3-2-3,B,3,2,Social Science,"Economics - Classical Economics",40
+B3-2-5,B,3,2,Social Science,"Economics - Modern Economics",40
+C1-3-1,C,1,3,Humanities,"History - Medieval History",45
+C1-3-2,C,1,3,Humanities,"History - Cultural Studies & Orientalism",45
+C1-2-1,C,1,2,Humanities,"History - Indian History & Politics",45
+D1-2-1,D,1,2,Psychology,"Psychology & Self-Help - General Psychology",30
+E1-2-3,E,1,2,Fiction,"Fiction - Classics & Literature",60
+E1-2-4,E,1,2,Fiction,"Fiction - World Literature",60
+E1-2-5,E,1,2,Fiction,"Fiction - Political Fiction",60
+E1-2-2,E,1,2,Fiction,"Fiction - American Literature",60
+E1-1-1,E,1,1,Fiction,"Fiction - Mystery & Detective",60
+E1-3-1,E,1,3,Fiction,"Fiction - Historical Fiction",60
+E1-3-3,E,1,3,Fiction,"Fiction - Thrillers & Suspense",60
+F1-1-1,F,1,1,Nonfiction,"Nonfiction - Inspirational & Memoirs",40
+F1-1-2,F,1,1,Nonfiction,"Nonfiction - Biographies & Autobiographies",40
+F1-2-4,F,1,2,Nonfiction,"Nonfiction - History & Political Documents",40
+G1-1-2,G,1,1,Philosophy,"Philosophy - Western Philosophy & Objectivism",35
+Digital,0,0,0,Digital,"Digital Resources - Journals and Research Papers",9999

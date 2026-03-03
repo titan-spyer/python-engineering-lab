@@ -1,1 +1,3 @@
-user_id,name,email,password_hash,location,role,max_limit
+user_id,username,password_hash,email,full_name,role,status,department,phone,address,registration_date,last_login,total_books_borrowed,total_fines_paid,times_blacklisted,activation_date,deactivation_date,deactivation_reason,notes,student_id,year_of_study,major,employee_id,designation,qualification,staff_id,section,shift,admin_id,access_level
+STU20240115001,john.doe,5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8,john.doe@university.edu,"John Doe",1,1,Computer Science,555-0101,"123 Student Dorm A",2024-01-15,2024-02-15 10:30:00,5,0.00,0,2024-01-16,,,"Good student",STU20240115001,2,Computer Science,,,,,,,,
+STU20240115002,jane.smith,5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8,jane.smith@university.edu,"Jane Smith",1,1,Mathematics,555-0102,"123 Student Dorm B",2024-01-15,2024-02-14 14:20:00,3,2.50,0,2024-01-16,,,"Has overdue book",STU20240115002,3,Mathematics,,,,,,,,

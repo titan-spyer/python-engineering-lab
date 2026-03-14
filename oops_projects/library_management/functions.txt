@@ -1,0 +1,27 @@
+validator
+	validate_email
+	validate_password_strength
+storage
+	search_resources_by_title	+
+	search_resources_by_author	+
+	search_resources_by_genere	+
+	find_resource_by_isbn	+
+	find_user_by_username	+
+	find_user_by_email	+
+	get_all_user	+
+	get_all_resources	+
+	find_user_by_id		+
+	find_resource_by_id	+
+	save_user	+
+	save_resource	+
+	find_borrowings_records_by_user	+
+	save_borrowing_record	+
+	find_fines_by_user	+
+	save_fine_record	+
+	find_copies_by_resource	+
+	save_copy	+
+	log_transaction	+
+Logger
+	warnings
+	info
+	error

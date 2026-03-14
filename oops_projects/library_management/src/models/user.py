@@ -115,9 +115,9 @@ class BorrowLimits:
     }
 
 
-@classmethod
-def get_limits(cls, role: UserRole) -> Dict[str, Any]:
-    return cls.LIMITS.get(role, cls.LIMITS[UserRole.STUDENT])
+    @classmethod
+    def get_limits(cls, role: UserRole) -> Dict[str, Any]:
+        return cls.LIMITS.get(role, cls.LIMITS[UserRole.STUDENT])
 
 
 # Borrowing Record class to track borrowings.
@@ -357,7 +357,7 @@ class User(ABC):
             return False, f"Cannot borrow items from category: {category}."
 
         # Check fines.
-        total_fines = sum(f.amount for f in self.fine_history if f.status == "pending")
+        total_fines = sum(f.amount for f in self.fines if f.status == "pending")
         if total_fines > limits.get('max_fines_allowed', 50):
             return False, f"Outstanding fines exceed limit: ${limits['max_fines_allowed']}."
 
@@ -396,7 +396,7 @@ class User(ABC):
                     self.add_notification(
                         "Fine Issued",
                         f"You have been issued a fine of ${fine:.2f} for overdue item: {record.copy_id}."
-                        "High"
+                        "high"
                     )
                 return fine
         return None
@@ -423,7 +423,7 @@ class User(ABC):
                 return True
         return False
 
-    def add_notfication(self, type: str, message: str, priority: str = "normal") -> str:
+    def add_notification(self, type: str, message: str, priority: str = "normal") -> str:
         notification_id = f"NOTIFY-{self.user_id}-{datetime.now().strftime('%Y%m%d%H%M%S')}"
         notification = Notification(
             notification_id=notification_id,
@@ -449,7 +449,7 @@ class User(ABC):
         if self.status == UserStatus.PENDING_ACTIVATION.value:
             self.status = UserStatus.ACTIVE.value
             self.activation_date = datetime.now().strftime("%Y-%m-%d")
-            self.add_notfication(
+            self.add_notification(
                 "account",
                 f"Your account has been activated by {activated_by}",
                 "normal"
@@ -462,7 +462,7 @@ class User(ABC):
             self.status = UserStatus.DEACTIVATED.value
             self.deactivation_date = datetime.now().strftime("%Y-%m-%d")
             self.deactivation_reason = reason
-            self.add_notfication(
+            self.add_notification(
                 "account",
                 f"Your account has been deactivate for {reason} by {deactivate_by}",
                 "high"
@@ -474,7 +474,7 @@ class User(ABC):
         self.status = UserStatus.BLACKLISTED.value
         self.times_blacklisted += 1
         self.notes += f"\nBlacklisted  on {datetime.now().strftime("%Y-%m-%d")} by {blacklisted_by}: {reason}"
-        self.add_notfication(
+        self.add_notification(
             "warning",
             f"Your account has been blacklisted for {reason} by {blacklisted_by}. Please contact library staff for more information.",
             "urgent"
@@ -485,7 +485,7 @@ class User(ABC):
         if self.status == UserStatus.BLACKLISTED.value:
             self.status = UserStatus.ACTIVE.value
             self.notes += f"\nRemoved from blacklist on {datetime.now().strftime('%Y-%m-%d')} by {removed_by}"
-            self.add_notfication(
+            self.add_notification(
                 "account",
                 "your account has been restored to active status.",
                 "high"
@@ -495,7 +495,7 @@ class User(ABC):
 
     def to_dict(self) -> Dict[str, Any]:
         return {
-            'User_id': self.user_id,
+            'user_id': self.user_id,
             'username': self.username,
             'password_hash': self.password_hash,
             'email': self.email,
@@ -578,7 +578,7 @@ class Faculty(User):
 
     def request_purchase(self, book_title: str, author: str, isbn: str = "") -> str:
         request_id = f"REQ-{self.user_id}-{datetime.now().strftime('%Y%m%d%H%M%S')}"
-        self.add_notfication(
+        self.add_notification(
             "request",
             f"Purchase request submitted for '{book_title}' by {author}. Request ID: {request_id}",
             "normal"
@@ -617,7 +617,7 @@ class Librarian(User):
     def get_borrowing_limits(self) -> Dict[str, Any]:
         return BorrowLimits.get_limits(UserRole.LIBRARIAN)
 
-    def manage_user(self, user: User, action: str, **kwargs) -> str:
+    def manage_user(self, user: User, action: str, **kwargs) -> bool:
         if user.role > UserRole.LIBRARIAN.value:
             print("Cannot manage users with admin users")
             return False
@@ -677,7 +677,7 @@ class Admin(User):
         return BorrowLimits.get_limits(UserRole.ADMIN)
 
     def override_policy(self, policy_name: str, new_value: Any) -> bool:
-        self.add_notfication(
+        self.add_notification(
             "system",
             f"Policy '{policy_name}' has been overridden to '{new_value}' by {self.full_name}.",
             "high"
@@ -688,7 +688,7 @@ class Admin(User):
         fine.waive(self.user_id)
         return True
 
-    def manage_lirarian(self, librarian: Librarian, action: str) -> bool:
+    def manage_librarian(self, librarian: Librarian, action: str) -> bool:
         if action == "promote":
             librarian.notes += f"\nPromoted on {datetime.now().strftime('%Y-%m-%d')} by {self.user_id}"
             return True
@@ -698,7 +698,7 @@ class Admin(User):
         return False
 
     def configure_system(self, settings: Dict[str, Any]) -> bool:
-        self.add_notfication(
+        self.add_notification(
             "system",
             f"system configuration updated: {len(settings)} changes",
             "normal"
@@ -764,7 +764,7 @@ class UserFactory:
             'address': row.get('address', ''),
             'registration_date': row.get('registration_date', ''),
             'last_login': row.get('last_login', ''),
-            'total_books_borrowed': int(row.get('total_books_borrowed', 0)),
+            'total_books_borrowed': int(row.get('total_books_borrowed') or 0),
             'total_fines_paid': float(row.get('total_fines_paid', 0.0)),
             'times_blacklisted': int(row.get('times_blacklisted', 0)),
             'activation_date': row.get('activation_date', ''),

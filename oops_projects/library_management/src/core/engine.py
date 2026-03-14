@@ -1,7 +1,7 @@
 from typing import Optional, List, Dict, Any, Tuple
 from datetime import datetime, timedelta
-from os
-from sys
+import os
+import sys
 
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -20,7 +20,7 @@ class LibraryEngine:
         self.logger = Logger("library_engine")
         self.validator = Validator()
         self._user_cache: Dict[str, User] = {}
-        self._book_cache: Dict[str, Book] = {}
+        self._book_cache: Dict[int, Resource] = {}
         self.logger.info("LibraryEngine initialized with data path: %s", data_path)
 
     def load_user(self, user_id: str) -> Optional[User]:
@@ -50,25 +50,25 @@ class LibraryEngine:
 
     def save_user(self, user: User) -> bool:
         try:
-            sucess = self.storage.save_user(user.to_dict())
-            if sucess:
+            success = self.storage.save_user(user.to_dict())
+            if success:
                 self._user_cache[user.user_id] = user
                 self._save_user_borrowing_history(user)
                 self._save_user_fines(user)
                 self.logger.info(f"User saved: {user.user_id}")
-            return sucess
+            return success
         except Exception as e:
             self.logger.error(f"Error saving user {user.user_id}: {e}")
             return False
 
     def save_book(self, book: Resource) -> bool:
         try:
-            sucess = self.storage.save_resource(book.to_dict())
-            if sucess:
+            success = self.storage.save_resource(book.to_dict())
+            if success:
                 self._book_cache[book.id] = book
                 self._save_book_copies(book)
                 self.logger.info(f"Book saved: {book.id}")
-            return sucess
+            return success
         except Exception as e:
             self.logger.error(f"Error saving book {book.id}: {e}")
             return False
@@ -229,28 +229,28 @@ class LibraryEngine:
                 due_date=(datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d")
             )
             user.add_fine(fine_record)
-            self.save_user(user)
-            self.logger.info(f"Copy {copy_id} returned by user {user_id}, fine: ₹{fine_amount:.2f}")
-            self.storage.log_transaction({
-                'transaction_id': f"TXN-{datetime.now().strftime('%Y%m%d%H%M%S')}",
-                'type': 'return',
-                'user_id': user_id,
-                'copy_id': copy_id,
-                'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                'fine_amount': fine_amount
-            })
-            if fine_amount > 0:
-                user.add_notfication(
-                    "fine",
-                    f"Your return of copy {copy_id} incurred a fine of ₹{fine_amount:.2f}. Please pay by {fine_record.due_date} to avoid further penalties.",
-                    "high"
-                )
-            return {
-                "success": True,
-                "message": f"Book returned successfully.",
-                "fine_amount": fine_amount,
-                "fine_waived": False
-            }
+        self.save_user(user)
+        self.logger.info(f"Copy {copy_id} returned by user {user_id}, fine: ₹{fine_amount:.2f}")
+        self.storage.log_transaction({
+            'transaction_id': f"TXN-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+            'type': 'return',
+            'user_id': user_id,
+            'copy_id': copy_id,
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'fine_amount': fine_amount
+        })
+        if fine_amount > 0:
+            user.add_notification(
+                "fine",
+                f"Your return of copy {copy_id} incurred a fine of ₹{fine_amount:.2f}. Please pay by {fine_record.due_date} to avoid further penalties.",
+                "high"
+            )
+        return {
+            "success": True,
+            "message": f"Book returned successfully.",
+            "fine_amount": fine_amount,
+            "fine_waived": False
+        }
 
     def renew_book(self, user_id: str, copy_id: str) -> Dict[str, Any]:
         user = self.load_user(user_id)
@@ -293,7 +293,7 @@ class LibraryEngine:
             'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             'new_due_date': active_record.due_date
         })
-        user.add_notfication(
+        user.add_notification(
             "renewal",
             f"Your renewal for copy {copy_id} was successful. New due date is {active_record.due_date}.",
             "normal"

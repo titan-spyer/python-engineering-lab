@@ -95,8 +95,7 @@ class Storage:
         with open(file_path, 'a', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=headers)
             if not file_exists:
-                # writer.writeheader()
-                pass
+                writer.writeheader()
             writer.writerow({k: (v if v is not None else '') for k, v in row.items()})
     def _update_csv(self, file_path: str, key_field: str, key_value: Union[str, int], updated_row: Dict[str, Any], headers: List[str]) -> bool:
         data = self._read_csv(file_path)
@@ -213,7 +212,7 @@ class Storage:
         return [
             copy for copy in copies if copy.get('resource_id') and int(copy['resource_id']) == resource_id
         ]
-    def find_copy_by_id(self, copy_id: int) -> Optional[Dict[str, str]]:
+    def find_copy_by_id(self, copy_id: str) -> Optional[Dict[str, str]]:
         copies = self._read_csv(self.copies_file)
         for copy in copies:
             if copy.get('copy_id') == copy_id:
@@ -295,7 +294,7 @@ class Storage:
         self._append_csv(self.transactions_file, transaction_data, headers)
         return True
 
-    def find_transaction_by_user(self, user_id: str) -> List[Dict[str, str]]:
+    def find_transactions_by_user(self, user_id: str) -> List[Dict[str, str]]:
         transactions = self._read_csv(self.transactions_file)
         return [t for t in transactions if t.get('user_id') == user_id]
 

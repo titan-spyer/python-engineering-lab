@@ -155,7 +155,7 @@ class Validator:
     def is_student(self, user: User) -> bool:
         return user and user.role == UserRole.STUDENT.value
     def can_manage_user(self, user: User) -> bool:
-        return self.is_admin(user)
+        return self.is_librarian_or_admin(user)
     def can_waive_fines(self, user: User) -> bool:
         return self.is_librarian_or_admin(user)
     def can_override_policies(self, user: User) -> bool:
@@ -192,7 +192,7 @@ class Validator:
             if not valid:
                 return False, msg
         if is_new and 'password' in user_data:
-            valid, msg = self.validate_password_strength(user_data['passowrd'])
+            valid, msg = self.validate_password_strength(user_data['password'])
             if not valid:
                 return False, msg
         if 'phone' in user_data and user_data['phone']:
@@ -210,7 +210,7 @@ class Validator:
             return False, "Date cannot be empty"
         try:
             datetime.strptime(date_str, format)
-            return True, "Vali date format"
+            return True, "Valid date format"
         except ValueError:
             return False, f"Invalid date format. Expected: {format}"
     def validate_due_date(self, due_date: str, borrow_date: Optional[str] = None) -> Tuple[bool, str]:
@@ -219,7 +219,7 @@ class Validator:
             return False, msg
         due = datetime.strptime(due_date, "%Y-%m-%d")
         if due < datetime.now():
-            return False, "Due date can not be in past"
+            return False, "Due date cannot be in past"
         if borrow_date:
             valid, _ = self.validate_date_format(borrow_date)
             if valid:
@@ -236,7 +236,7 @@ class Validator:
         dangerous_chars = [';', '--', 'DROP', 'DELETE', 'UPDATE', 'INSERT']
         for char in dangerous_chars:
             if char in query.upper():
-                return False, f"Search query contains invalid characters"
+                return False, "Search query contains invalid characters"
         return True, "Search Query is valid"
 
     def validate_fine_amount(self, amount: float) -> Tuple[bool, str]:
@@ -257,7 +257,7 @@ class Validator:
         return True, "Fine can be charged"
 
 
-    def validate_important_data(self, data: dict) -> Tuple[bool, List[str]]:
+    def validate_import_data(self, data: dict) -> Tuple[bool, List[str]]:
         errors = []
         if 'users' in data:
             for i, user in enumerate(data['users']):
